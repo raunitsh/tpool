@@ -50,7 +50,7 @@ ThreadPool::InternalWorker()
 }
 
 void
-ThreadPool::Enqueue (Task& pTask)
+ThreadPool::Enqueue (const Task& pTask)
 {
 	vMtx.lock();
 	vTaskQueue.push (pTask);

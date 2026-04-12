@@ -23,13 +23,9 @@ main ()
 
     for (int i = 0; i < 10; i++) 
     {
-        Task t;
         int* arg = new int(i);
         
-        t.uTaskFn = PrintNumber;
-        t.uArgs = arg;
-        
-        pool.Enqueue (t);
+        pool.Enqueue ({PrintNumber, arg});
     }
 
     return 0;

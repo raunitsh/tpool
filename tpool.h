@@ -15,7 +15,7 @@ public:
 								ThreadPool			(uint pNumThreads);
 								~ThreadPool			();
 
-	void						Enqueue				(Task& pTask);
+	void						Enqueue				(const Task& pTask);
 
 private:
 
