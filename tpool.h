@@ -15,7 +15,7 @@ public:
 								ThreadPool			(uint pNumThreads);
 								~ThreadPool			();
 
-	void						Enqueue				(const Task& pTask);
+	std::future<int>			Enqueue				(Task pTask);
 
 private:
 
@@ -27,5 +27,5 @@ private:
 	std::mutex					vMtx;
 	std::condition_variable		vCv;
 	std::vector<std::thread>	vThreads;
-	std::atomic<bool>			vTasksDone;
+	bool						vTasksDone;
 };

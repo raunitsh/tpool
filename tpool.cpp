@@ -16,7 +16,10 @@ ThreadPool::ThreadPool (uint pNumThreads)
 
 ThreadPool::~ThreadPool()
 {
+	vMtx.lock();
 	vTasksDone = true;
+	vMtx.unlock();
+
 	vCv.notify_all();
 
 	for (std::thread& t : vThreads)
@@ -41,7 +44,7 @@ ThreadPool::InternalWorker()
 			return;
 		}
 
-		Task task = vTaskQueue.front();
+		Task task = std::move (vTaskQueue.front());
 		vTaskQueue.pop();
 		lk.unlock();
 
@@ -49,18 +52,24 @@ ThreadPool::InternalWorker()
 	}
 }
 
-void
-ThreadPool::Enqueue (const Task& pTask)
+std::future<int>
+ThreadPool::Enqueue (Task pTask)
 {
+	std::future<int> f = pTask.uPromise.get_future();
+
 	vMtx.lock();
-	vTaskQueue.push (pTask);
+	vTaskQueue.push(std::move (pTask));
 	vMtx.unlock();
 
 	vCv.notify_all ();
+
+	return f;
 }
 
 void
 ThreadPool::InternalExecuteTask(Task& pTask)
 {
-	pTask.uTaskFn (pTask.uArgs);
+	int res = pTask.uTaskFn (pTask.uArgs);
+	
+	pTask.uPromise.set_value (res);
 }

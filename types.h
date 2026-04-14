@@ -2,14 +2,16 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <future>
 
 typedef unsigned int uint;
 
-typedef void (*TaskFn) (void* pArgs);
+typedef int (*TaskFn) (void* pArgs);
 
 typedef struct
 {
-	TaskFn	uTaskFn;
-	void* uArgs;
-
-} Task;
+	TaskFn				uTaskFn;
+	void*				uArgs;
+	std::promise<int>	uPromise;
+}
+Task;
