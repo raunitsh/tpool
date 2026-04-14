@@ -52,10 +52,10 @@ ThreadPool::InternalWorker()
 	}
 }
 
-std::future<int>
+std::future<void*>
 ThreadPool::Enqueue (Task pTask)
 {
-	std::future<int> f = pTask.uPromise.get_future();
+	std::future<void*> f = pTask.uPromise.get_future();
 
 	vMtx.lock();
 	vTaskQueue.push(std::move (pTask));
@@ -69,7 +69,7 @@ ThreadPool::Enqueue (Task pTask)
 void
 ThreadPool::InternalExecuteTask(Task& pTask)
 {
-	int res = pTask.uTaskFn (pTask.uArgs);
+	void* res = pTask.uTaskFn (pTask.uArgs);
 	
 	pTask.uPromise.set_value (res);
 }

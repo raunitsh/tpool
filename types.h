@@ -6,12 +6,12 @@
 
 typedef unsigned int uint;
 
-typedef int (*TaskFn) (void* pArgs);
+typedef void* (*TaskFn) (void* pArgs);
 
 typedef struct
 {
 	TaskFn				uTaskFn;
 	void*				uArgs;
-	std::promise<int>	uPromise;
+	std::promise<void*>	uPromise;
 }
 Task;

@@ -15,7 +15,7 @@ public:
 								ThreadPool			(uint pNumThreads);
 								~ThreadPool			();
 
-	std::future<int>			Enqueue				(Task pTask);
+	std::future<void*>			Enqueue				(Task pTask);
 
 private:
 

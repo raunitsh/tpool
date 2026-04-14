@@ -6,33 +6,36 @@ using namespace std;
 
 std::mutex mtx;
 
-int
+void*
 PrintNumber (void* args) 
 {
-    //mtx.lock();
-    //cout << "Task running, got: " << *(int*)(args) << endl;
-    //mtx.unlock();
+    mtx.lock();
+    cout << "Task running, got: " << *(int*)(args) << endl;
+    mtx.unlock();
 
-    return *(int*)args;
+    return (void*)args;
 }
 
 int 
 main () 
 {
     ThreadPool pool(4); 
-    std::vector<future<int>> fs;
+    std::vector<future<void*>> fs;
 
     for (int i = 0; i < 10; i++) 
     {
         int* arg = new int(i);
         
-        future<int> f = pool.Enqueue ({PrintNumber, arg});
+        future<void*> f = pool.Enqueue ({PrintNumber, arg});
         fs.emplace_back(std::move(f));
     }
 
-    for (future<int>& f : fs)
+    this_thread::sleep_for (chrono::milliseconds(8));
+
+    for (uint i=0; i<fs.size(); i++)
     {
-        cout << "got value: " << f.get() << endl;
+        void * res = fs[i].get ();
+        cout << "got value: " << *(int*)res << endl;
     }
 
     return 0;
