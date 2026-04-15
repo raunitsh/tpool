@@ -44,7 +44,7 @@ ThreadPool::InternalWorker()
 			return;
 		}
 
-		Task task = std::move (vTaskQueue.front());
+		BaseTask* task = vTaskQueue.front();
 		vTaskQueue.pop();
 		lk.unlock();
 
@@ -52,24 +52,8 @@ ThreadPool::InternalWorker()
 	}
 }
 
-std::future<void*>
-ThreadPool::Enqueue (Task pTask)
-{
-	std::future<void*> f = pTask.uPromise.get_future();
-
-	vMtx.lock();
-	vTaskQueue.push(std::move (pTask));
-	vMtx.unlock();
-
-	vCv.notify_all ();
-
-	return f;
-}
-
 void
-ThreadPool::InternalExecuteTask(Task& pTask)
+ThreadPool::InternalExecuteTask(BaseTask* pTask)
 {
-	void* res = pTask.uTaskFn (pTask.uArgs);
-	
-	pTask.uPromise.set_value (res);
+	pTask->Execute ();	
 }

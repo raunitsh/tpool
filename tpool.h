@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include "types.h"
+#include "task.h"
 
 class ThreadPool
 {
@@ -15,17 +15,20 @@ public:
 								ThreadPool			(uint pNumThreads);
 								~ThreadPool			();
 
-	std::future<void*>			Enqueue				(Task pTask);
+	template<typename Ret, typename ...Args>
+	std::future<Ret>            Enqueue             (Fn<Ret, Args...> pFunc, Args... pArgs);
 
 private:
 
-	void						InternalExecuteTask (Task& pTask);
+	void						InternalExecuteTask (BaseTask* pTask);
 	void						InternalWorker		();
 
 	uint						vNumThreads;
-	std::queue<Task>			vTaskQueue;
+	std::queue<BaseTask*>		vTaskQueue;
 	std::mutex					vMtx;
 	std::condition_variable		vCv;
 	std::vector<std::thread>	vThreads;
 	bool						vTasksDone;
 };
+
+#include "tpool.hxx"

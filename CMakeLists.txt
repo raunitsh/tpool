@@ -12,7 +12,7 @@ endif()
 project ("tpool")
 
 # Add source to this project's executable.
-add_executable (tpool "tpool.cpp" "tpool.hpp" "types.hpp" "main.cpp")
+add_executable (tpool "tpool.cpp" "tpool.h" "types.h" "task.cpp" "task.h" "task.hxx" "tpool.hxx" "main.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tpool PROPERTY CXX_STANDARD 20)

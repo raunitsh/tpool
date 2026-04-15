@@ -6,27 +6,27 @@ using namespace std;
 
 std::mutex mtx;
 
-void*
-PrintNumber (void* args) 
+std::string 
+GetNum (int pN)
 {
-    mtx.lock();
-    cout << "Task running, got: " << *(int*)(args) << endl;
-    mtx.unlock();
+    mtx.lock ();
+    cout << "Task running, got: " << pN << endl;
+    mtx.unlock ();
 
-    return (void*)args;
+    return "Hello Raunit";
 }
 
 int 
 main () 
 {
     ThreadPool pool(4); 
-    std::vector<future<void*>> fs;
+    std::vector<future<std::string>> fs;
 
     for (int i = 0; i < 10; i++) 
     {
         int* arg = new int(i);
         
-        future<void*> f = pool.Enqueue ({PrintNumber, arg});
+        future<string> f = pool.Enqueue (GetNum, i);
         fs.emplace_back(std::move(f));
     }
 
@@ -34,8 +34,8 @@ main ()
 
     for (uint i=0; i<fs.size(); i++)
     {
-        void * res = fs[i].get ();
-        cout << "got value: " << *(int*)res << endl;
+        string res = fs[i].get ();
+        cout << "got value: " << res << endl;
     }
 
     return 0;
