@@ -21,9 +21,11 @@ class DerivedTask : public BaseTask
         void                Execute         () override;
 
 public:
-        Fn<Ret, Args...>    uTaskFn;
-        std::tuple<Args...> uArgs;
         std::promise<Ret>   uPromise;
+
+private:
+        Fn<Ret, Args...>    vTaskFn;
+        std::tuple<Args...> vArgs;
 };
 
-#include "task.hxx";
+#include "task.hxx"

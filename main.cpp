@@ -24,8 +24,6 @@ main ()
 
     for (int i = 0; i < 10; i++) 
     {
-        int* arg = new int(i);
-        
         future<string> f = pool.Enqueue (GetNum, i);
         fs.emplace_back(std::move(f));
     }

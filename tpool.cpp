@@ -55,5 +55,6 @@ ThreadPool::InternalWorker()
 void
 ThreadPool::InternalExecuteTask(BaseTask* pTask)
 {
-	pTask->Execute ();	
+	pTask->Execute ();
+	delete pTask;
 }
